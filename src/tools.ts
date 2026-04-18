@@ -26,7 +26,7 @@ export function createRequestPurchaseTool(client: LetAgentPay) {
     description:
       "Request approval to spend money on a purchase. " +
       "Use this BEFORE making any purchase. Returns approval status and budget remaining.",
-    parameters: z.object({
+    inputSchema: z.object({
       amount: z.number().positive().describe("Amount to spend"),
       category: z
         .string()
@@ -65,7 +65,7 @@ export function createCheckBudgetTool(client: LetAgentPay) {
   return tool({
     description:
       "Check current budget status including total budget, spent, held, and remaining amounts.",
-    parameters: z.object({}),
+    inputSchema: z.object({}),
     execute: async () => {
       const budget = await client.checkBudget();
       return {
@@ -83,7 +83,7 @@ export function createCheckBudgetTool(client: LetAgentPay) {
 export function createListCategoriesTool(client: LetAgentPay) {
   return tool({
     description: "List valid spending categories for purchase requests.",
-    parameters: z.object({}),
+    inputSchema: z.object({}),
     execute: async () => {
       const categories = await client.listCategories();
       return { categories };
@@ -95,7 +95,7 @@ export function createMyRequestsTool(client: LetAgentPay) {
   return tool({
     description:
       "List your recent purchase requests. Optionally filter by status.",
-    parameters: z.object({
+    inputSchema: z.object({
       status: z
         .enum(["pending", "auto_approved", "approved", "rejected", "expired"])
         .optional()
@@ -130,7 +130,7 @@ export function createConfirmPurchaseTool(client: LetAgentPay) {
     description:
       "Confirm the result of an approved purchase. " +
       "Call this AFTER completing (or failing) a purchase to close the request.",
-    parameters: z.object({
+    inputSchema: z.object({
       requestId: z.string().describe("The request ID from request_purchase"),
       success: z.boolean().describe("Whether the purchase was successful"),
       actualAmount: z
@@ -142,7 +142,7 @@ export function createConfirmPurchaseTool(client: LetAgentPay) {
         .optional()
         .describe("URL to receipt or confirmation"),
     }),
-    execute: async ({ requestId, success, actualAmount, receiptUrl }) => {
+    execute: async ({ requestId, success, actualAmount, receiptUrl }: { requestId: string; success: boolean; actualAmount?: number; receiptUrl?: string }) => {
       const result = await client.confirmPurchase(requestId, {
         success,
         actualAmount,
