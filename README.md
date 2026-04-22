@@ -30,7 +30,7 @@ const { text } = await generateText({
 | --- | --- |
 | `requestPurchase` | Request approval to spend money (call BEFORE any purchase) |
 | `checkBudget` | Check current budget, spent, held, and remaining |
-| `listCategories` | List valid spending categories |
+| `listCategories` | List account's custom spending categories |
 | `myRequests` | List recent purchase requests (optionally filtered by status) |
 | `confirmPurchase` | Confirm or report failure after completing a purchase |
 
